@@ -42,16 +42,20 @@ public class LoginController {
     @RequestMapping(value = "/login/register", method = RequestMethod.POST)
     public String registerComplete(Model model, @Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
-            userService.create(userDto);
-            model.addAttribute("user", new User());
-            System.out.println("LoginController : registration Done");
-            return "login";
+            if(userService.create(userDto) != null) {
+                model.addAttribute("user", new User());
+                System.out.println("LoginController : registration Done");
+                return "login";
+            }
+            else {
+                model.addAttribute("message", "SQL error at insert");
+            }
         } else {
-            System.out.println("LoginController : error at registration");
             model.addAttribute("message",bindingResult.getAllErrors());
-            model.addAttribute("userDto", userDto);
-            return "user-form";
         }
+        System.out.println("LoginController : error at registration");
+        model.addAttribute("userDto", userDto);
+        return "user-form";
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)

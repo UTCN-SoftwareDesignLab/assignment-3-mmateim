@@ -1,17 +1,21 @@
 package demo.controller;
 
 import demo.Validator.UserValidator;
+import demo.dto.UserDto;
 import demo.entity.User;
 import demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Controller
@@ -25,81 +29,59 @@ public class UserController {
     public String getAll(Model model) {
         model.addAttribute("message", "");
         model.addAttribute("users", service.getAll());
-        model.addAttribute("user", new User());
+        model.addAttribute("userDto", new UserDto());
         System.out.println("UserController : return users-admin.html");
         return "users-admin";
     }
 
     @RequestMapping(params = "create=", method = RequestMethod.POST)
-    public String createUser(Model model, @ModelAttribute("user") User user) {
+    public String createUser(Model model, @Valid @ModelAttribute("userDto") UserDto userDto, BindingResult bindingResult) {
         System.out.println("UserController : create");
         String message;
-        try {
-            UserValidator validator = new UserValidator(user);
-            List<String> errors = validator.validate();
-            if (errors.size() != 0) {
-                message = errors.toString();
-            } else {
+        if (!bindingResult.hasErrors()) {
+            if(service.create(userDto) != null) {
+                System.out.println("UserController : create user Done");
                 message = "";
+                model.addAttribute("userDto", new UserDto());
             }
-        } catch (Exception e) {
-            message = "error : some fields are empty";
-        }
-        if (message.equals("")) {
-            ShaPasswordEncoder encoder = new ShaPasswordEncoder();
-            String pass = encoder.encodePassword(user.getPassword(), "");
-            user.setPassword(pass);
-            if (service.create(user) == null) {
-                message = "Error sql table user";
-            } else {
-                message = "";
+            else {
+               message = "SQL error at insert";
             }
-        }
-        if (message.equals("")) {
-            model.addAttribute("user", new User());
         } else {
-            model.addAttribute("user", user);
+            message = bindingResult.getAllErrors().toString();
         }
-        model.addAttribute("users", service.getAll());
+        if(!message.equals("")){
+            model.addAttribute("userDto", userDto);
+            System.out.println("UserController : error at create user");
+        }
         model.addAttribute("message", message);
+        model.addAttribute("users", service.getAll());
         return "users-admin";
     }
 
     @RequestMapping(params = "update=", method = RequestMethod.POST)
-    public String updateUser(Model model, @ModelAttribute("user") User user) {
+    public String updateUser(Model model, @Valid @ModelAttribute("userDto") UserDto userDto, @NotNull @RequestParam("userId") Integer userId, BindingResult bindingResult) {
         System.out.println("UserController : update");
         String message;
-        try {
-            UserValidator validator = new UserValidator(user);
-            List<String> errors = validator.validate();
-            if (errors.size() != 0) {
-                message = errors.toString();
-            } else {
+        if (!bindingResult.hasErrors()) {
+            if(service.update(userDto, userId) != null) {
+                System.out.println("UserController : create user Done");
                 message = "";
+                model.addAttribute("userDto", new UserDto());
             }
-        } catch (Exception e) {
-            message = "error : some fields are empty";
-        }
-        if (message.equals("")) {
-            ShaPasswordEncoder encoder = new ShaPasswordEncoder();
-            String pass = encoder.encodePassword(user.getPassword(), "");
-            user.setPassword(pass);
-            if (service.update(user) == null) {
-                message = "Error sql table user";
-            } else {
-                message = "";
+            else {
+                message = "SQL error at insert";
             }
+        } else {
+            message = bindingResult.getAllErrors().toString();
         }
-        if(message.equals("")) {
-            model.addAttribute("user", new User());
-            return "login";
+        if(!message.equals("")){
+            model.addAttribute("userDto", userDto);
+            System.out.println("UserController : error at create user");
         }
-        else {
-            model.addAttribute("users", service.getAll());
-            model.addAttribute("message", message);
-            model.addAttribute("user", user);
-            return "users-admin";
-        }
+        model.addAttribute("message", message);
+        model.addAttribute("users", service.getAll());
+        return "users-admin";
     }
 
     @RequestMapping(params = "delete=", method = RequestMethod.GET)
@@ -111,8 +93,9 @@ public class UserController {
         } else {
             message = "Id field is empty";
         }
-        model.addAttribute("user", new User());
+        model.addAttribute("userDto", new UserDto());
         if(message.equals("")){
+            model.addAttribute("user", new User());
             return "login";
         }
         else {

@@ -31,11 +31,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) {
-        return userRepository.save(user);
-    }
-
-    @Override
     public User create(UserDto userDto) {
         ShaPasswordEncoder encoder = new ShaPasswordEncoder();
         String pass = encoder.encodePassword(userDto.getPassword(), "");
@@ -50,7 +45,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
+    public User update(UserDto userDto, Integer id) {
+        User user = userRepository.findById(id);
+        user.setRole(userDto.getRole());
+        user.setName(userDto.getName());
+        user.setUsername(userDto.getUsername());
         return userRepository.save(user);
     }
 }

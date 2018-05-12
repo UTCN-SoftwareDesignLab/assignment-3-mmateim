@@ -36,7 +36,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findByGenre() {
+    public void findByUsername() {
         User user = userService.findByUsername("admin");
         Assert.assertTrue(user.getName().equals("adminName"));
     }
