@@ -21,7 +21,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/consultations-secretary")
-public class ConsultationController {
+public class ConsultationControllerSecretary {
 
     @Autowired
     private ConsultationService consultationService;
@@ -56,8 +56,7 @@ public class ConsultationController {
                 } else {
                     message = "SQL error at insert";
                 }
-            }
-            else {
+            } else {
                 message = "Doctor is not available for this date";
             }
         } else {
@@ -79,17 +78,12 @@ public class ConsultationController {
         System.out.println("ConsultationController : update");
         String message;
         if (!bindingResult.hasErrors()) {
-            if (consultationService.isDoctorAvailable(consultationDto.getDoctor_id(), consultationDto.getDate())) {
-                if (consultationService.update(consultationDto, consultationId) != null) {
-                    System.out.println("ConsultationController : update consultation Done");
-                    message = "";
-                    model.addAttribute("consultationDto", new ConsultationDto());
-                } else {
-                    message = "SQL error at update";
-                }
-            }
-            else {
-                message = "Doctor is not available for this date";
+            if (consultationService.update(consultationDto, consultationId) != null) {
+                System.out.println("ConsultationController : update consultation Done");
+                message = "";
+                model.addAttribute("consultationDto", new ConsultationDto());
+            } else {
+                message = "SQL error at update";
             }
         } else {
             message = getErrors(bindingResult);

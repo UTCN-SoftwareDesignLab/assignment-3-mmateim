@@ -10,4 +10,5 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Inte
 
     Consultation findById(int id);
     List<Consultation> findByDate(Date date);
+    List<Consultation> findByPatient_id(int patient_id);
 }

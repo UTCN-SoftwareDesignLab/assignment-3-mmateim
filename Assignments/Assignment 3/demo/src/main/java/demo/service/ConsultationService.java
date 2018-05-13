@@ -12,5 +12,7 @@ public interface ConsultationService {
     Consultation create(ConsultationDto consultationDto);
     void delete(int consultationId);
     Consultation update(ConsultationDto consultationDto, Integer id);
+    Consultation update(Consultation consultation);
     boolean isDoctorAvailable(int doctor_id, Date date);
+    List<Consultation> findByPatient(Integer patient_id);
 }

@@ -42,6 +42,7 @@ public class ConsultationServiceImpl implements ConsultationService {
         Patient patient = patientRepository.findById(consultationDto.getPatient_id());
         User doctor = userRepository.findById(consultationDto.getDoctor_id());
         Consultation consultation = new Consultation(doctor, patient, consultationDto.getDate());
+        consultation.setDetails("");
         return consultationRepository.save(consultation);
     }
 
@@ -60,6 +61,11 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     @Override
+    public Consultation update(Consultation consultation) {
+        return consultationRepository.save(consultation);
+    }
+
+    @Override
     public boolean isDoctorAvailable(int doctor_id, Date date) {
         List<Consultation> consultations = consultationRepository.findByDate(date);
         for(Consultation c : consultations){
@@ -67,5 +73,10 @@ public class ConsultationServiceImpl implements ConsultationService {
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public List<Consultation> findByPatient(Integer patient_id) {
+        return consultationRepository.findByPatient_id(patient_id);
     }
 }

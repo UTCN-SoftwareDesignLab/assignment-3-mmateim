@@ -24,6 +24,7 @@ public class Consultation {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
+    private String details;
 
     public Consultation() {
     }
@@ -65,5 +66,13 @@ public class Consultation {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 }

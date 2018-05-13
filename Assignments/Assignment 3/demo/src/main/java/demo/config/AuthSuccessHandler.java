@@ -23,6 +23,6 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
             return "/patients";
         }
         System.out.println("Handler : Logged in as DOCTOR");
-        return "/consultations";
+        return "/consultations-doctor";
     }
 }
