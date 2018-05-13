@@ -1,5 +1,7 @@
 package demo.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -16,16 +18,22 @@ public class Patient {
     private Integer idCardNr;
     private String cnp;
     private String address;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
-    public Patient(int id, String name, Integer idCardNr, String cnp, String address, Date birthDate) {
-        this.id = id;
+    public Patient() {
+    }
+
+    public Patient(String name, Integer idCardNr, String cnp, String address, Date birthDate) {
         this.name = name;
         this.idCardNr = idCardNr;
         this.cnp = cnp;
         this.address = address;
         this.birthDate = birthDate;
     }
+
+
 
 //    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
 //    public Set<Consultation> getConsultations() {

@@ -1,11 +1,9 @@
 package demo.controller;
 
-import demo.Validator.UserValidator;
 import demo.dto.UserDto;
 import demo.entity.User;
 import demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/users")
@@ -65,19 +62,19 @@ public class UserController {
         String message;
         if (!bindingResult.hasErrors()) {
             if(service.update(userDto, userId) != null) {
-                System.out.println("UserController : create user Done");
+                System.out.println("UserController : update user Done");
                 message = "";
                 model.addAttribute("userDto", new UserDto());
             }
             else {
-                message = "SQL error at insert";
+                message = "SQL error at update";
             }
         } else {
             message = bindingResult.getAllErrors().toString();
         }
         if(!message.equals("")){
             model.addAttribute("userDto", userDto);
-            System.out.println("UserController : error at create user");
+            System.out.println("UserController : error at update user");
         }
         model.addAttribute("message", message);
         model.addAttribute("users", service.getAll());

@@ -1,6 +1,5 @@
 package demo.service;
 
-import demo.Validator.UserValidator;
 import demo.dto.UserDto;
 import demo.entity.User;
 import demo.repository.UserRepository;
@@ -46,6 +45,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(UserDto userDto, Integer id) {
+        if(id == null)
+            return null;
         User user = userRepository.findById(id);
         user.setRole(userDto.getRole());
         user.setName(userDto.getName());

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patients</title>
+    <style>
+        td {
+            width: 200px;
+            text-align: center;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        table, th, td {
+            border-collapse: collapse;
+            border: 1px solid black;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<a th:href="@{/logout}">Logout</a>
+
+<h1>Users:</h1>
+<h2 th:text="${message}"></h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>IdCardNr</th>
+        <th>CNP</th>
+        <th>Address</th>
+        <th>BirthDate</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="patient : ${patients}">
+        <td th:text="${patient.id}"></td>
+        <td th:text="${patient.name}"></td>
+        <td th:text="${patient.idCardNr}"></td>
+        <td th:text="${patient.cnp}"></td>
+        <td th:text="${patient.address}"></td>
+        <td th:text="${patient.birthDate}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<hr/>
+<br/>
+<h3>All fields must me completed</h3>
+<form action="#" th:action="@{/patients}" name="patientDto" id="patientDto" th:object="${patientDto}" method="post">
+    Id: <br/>
+    <input type="number" id="patientId" name="patientId"/> <br/>
+    Name: <br/>
+    <input type="text" id="name" name="name" th:field="${patientDto.name}"/> <br/>
+    IdCardNr: <br/>
+    <input type="number" id="idCardNr" name="idCardNr" th:field="${patientDto.idCardNr}"/> <br/>
+    CNP: <br/>
+    <input type="text" id="cnp" name="cnp" th:field="${patientDto.cnp}"/> <br/>
+    Address: <br/>
+    <input type="text" id="address" name="address" th:field="${patientDto.address}"/> <br/>
+    BirthDate: <br/>
+    <input type="date" id="birthDate" pattern="yyyy-MM-dd" name="birthDate" th:field="${patientDto.birthDate}"/> <br/>
+
+    <button type="submit" name="create">Create</button>
+    <button type="submit" name="update">Update</button>
+</form>
+</body>
+</html>
