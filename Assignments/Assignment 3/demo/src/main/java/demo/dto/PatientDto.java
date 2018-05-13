@@ -11,24 +11,24 @@ import java.util.Date;
 public class PatientDto {
 
     @NotNull
-    @Pattern(regexp = "[a-zA-Z ]+")
+    @Pattern(regexp = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", message ="Name Can only contain letters and .,-'")
     private String name;
 
     @NotNull
-    @Digits(integer=3, fraction=0)
+    @Digits(integer=3, fraction=0, message ="idCardNr is a number of max 3 digits")
     private Integer idCardNr;
 
     @NotNull
-    @Pattern(regexp = "[0-9]+")
+    @Pattern(regexp = "[0-9]+", message ="CNP can contain only digits")
     private String cnp;
 
     @NotNull
-    @Pattern(regexp = "[a-zA-Z0-9., ]+")
+    @Pattern(regexp = "[a-zA-Z0-9., ]+", message ="Address can contain only letters, digits, .,")
     private String address;
 
     @NotNull
    // @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$")
-   // @Past
+    @Past(message = "Date must be in the past")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
 

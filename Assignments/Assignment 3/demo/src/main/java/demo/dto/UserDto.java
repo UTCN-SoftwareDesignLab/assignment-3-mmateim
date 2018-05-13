@@ -14,10 +14,10 @@ public class UserDto {
     @Size(min = 4)
     private String password;
 
-    @Pattern(regexp ="(^ADMIN$|^DOCTOR$|^SECRETARY$)")
+    @Pattern(regexp ="(^ADMIN$|^DOCTOR$|^SECRETARY$)", message = "Role must be ADMIN / DOCTOR / SECRETARY")
     private String role;
 
-    @Pattern(regexp = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")
+    @Pattern(regexp = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", message ="Name Can only contain letters and .,-'")
     private String name;
 
     public UserDto(String username, String password, String role, String name) {

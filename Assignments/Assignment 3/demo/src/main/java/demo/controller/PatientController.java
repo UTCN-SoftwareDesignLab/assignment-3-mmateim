@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/patients")
@@ -47,7 +49,7 @@ public class PatientController {
                 message = "SQL error at insert";
             }
         } else {
-            message = bindingResult.getAllErrors().toString();
+            message = getErrors(bindingResult);
         }
         if(!message.equals("")){
             model.addAttribute("patientDto", patientDto);
@@ -72,7 +74,7 @@ public class PatientController {
                 message = "SQL error at update";
             }
         } else {
-            message = bindingResult.getAllErrors().toString();
+            message = getErrors(bindingResult);
         }
         if(!message.equals("")){
             model.addAttribute("patientDto", patientDto);
@@ -81,6 +83,15 @@ public class PatientController {
         model.addAttribute("message", message);
         model.addAttribute("patients", service.getAll());
         return "patients";
+    }
+
+    private String getErrors(BindingResult bindingResult){
+        String message = "";
+        List<ObjectError> errors = bindingResult.getAllErrors();
+        for( ObjectError e : errors){
+            message += "ERROR: " + e.getDefaultMessage();
+        }
+        return message;
     }
 }
 

@@ -1,5 +1,8 @@
 package demo.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -18,7 +21,19 @@ public class Consultation {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
+
+    public Consultation() {
+    }
+
+    @Autowired
+    public Consultation(User doctor, Patient patient, Date date) {
+        this.doctor = doctor;
+        this.patient = patient;
+        this.date = date;
+    }
 
     public int getId() {
         return id;
