@@ -1,11 +1,14 @@
 package demo.controller;
 
 import demo.dto.ConsultationDto;
+import demo.dto.Message;
 import demo.entity.User;
 import demo.service.ConsultationService;
 import demo.service.PatientService;
 import demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,14 +26,18 @@ import java.util.List;
 @RequestMapping(value = "/consultations-secretary")
 public class ConsultationControllerSecretary {
 
-    @Autowired
     private ConsultationService consultationService;
-
-    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
     private UserService userService;
+    private PatientService patientService;
 
     @Autowired
-    private PatientService patientService;
+    public ConsultationControllerSecretary(ConsultationService consultationService, SimpMessagingTemplate simpMessagingTemplate, UserService userService, PatientService patientService) {
+        this.consultationService = consultationService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.userService = userService;
+        this.patientService = patientService;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String getAll(Model model) {
@@ -44,6 +51,7 @@ public class ConsultationControllerSecretary {
     }
 
     @RequestMapping(params = "create=", method = RequestMethod.POST)
+    @MessageMapping("/send")
     public String createConsultation(Model model, @Valid @ModelAttribute("consultationDto") ConsultationDto consultationDto, BindingResult bindingResult) {
         System.out.println("ConsultationController : create");
         String message;
@@ -53,6 +61,10 @@ public class ConsultationControllerSecretary {
                     System.out.println("ConsultationController : create consultation Done");
                     message = "";
                     model.addAttribute("consultationDto", new ConsultationDto());
+
+                    Message message1 = new Message("Patient " + consultationDto.getPatient_id() + " scheduled a consultation on " + consultationDto.getDate());
+                    User doctor = userService.findById(consultationDto.getDoctor_id());
+                    simpMessagingTemplate.convertAndSendToUser(doctor.getUsername(), "/queue/reply", message1);
                 } else {
                     message = "SQL error at insert";
                 }

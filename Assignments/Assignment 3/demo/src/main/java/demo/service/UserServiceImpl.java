@@ -30,6 +30,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findById(Integer id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     public User create(UserDto userDto) {
         ShaPasswordEncoder encoder = new ShaPasswordEncoder();
         String pass = encoder.encodePassword(userDto.getPassword(), "");
